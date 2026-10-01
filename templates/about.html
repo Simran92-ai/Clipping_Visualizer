@@ -1,0 +1,74 @@
+{% extends "base.html" %}{% block title %}About Clipping{% endblock %}
+{% block content %}
+<h2>What is Clipping?</h2>
+<p class="toc">On this page: <a href="#algorithms">Algorithms</a> &middot; <a href="#advantages">Advantages</a> &middot; <a href="#performance">Performance</a> &middot; <a href="#lab">Line Clipping Lab</a> &middot; <a href="#polygon-lab">Polygon Clipping Lab</a></p>
+<p>Clipping means <strong>cutting away the part of a picture that lies outside a chosen rectangle (or other region)</strong> so that only the inside part is drawn. Think of looking at a large poster through a window: you can only see what is inside the window frame.</p>
+
+<h2 id="algorithms">Types / Algorithms</h2>
+<h3>Cohen-Sutherland Line Clipping</h3>
+<p>Every end point of a line is given a 4-bit <strong>region code</strong> (Top, Bottom, Right, Left) telling which side of the window it lies on. A bit of 1 means the point is beyond that boundary. Code 0000 means inside the window.</p>
+<ul><li>Both codes 0000 &rarr; line is completely inside (accept).</li><li>Bitwise AND of the codes &ne; 0000 &rarr; both points are on the same outer side, so the line is completely outside (reject).</li><li>Otherwise &rarr; compute the intersection with a window edge, replace the outside point and repeat.</li></ul>
+<svg viewBox="0 0 420 270" width="420" style="max-width:100%;border:1px solid var(--bd)" role="img" aria-label="Region codes around the clipping window">
+<rect x="140" y="90" width="140" height="90" fill="#e8f0fa" stroke="#1f4e8c" stroke-width="2.5"/>
+<g stroke="#999" stroke-dasharray="4 3"><line x1="140" y1="0" x2="140" y2="270"/><line x1="280" y1="0" x2="280" y2="270"/><line x1="0" y1="90" x2="420" y2="90"/><line x1="0" y1="180" x2="420" y2="180"/></g>
+<g font-family="Arial" font-size="15" text-anchor="middle" fill="#222">
+<text x="70" y="50">1001</text><text x="210" y="50">1000</text><text x="350" y="50">1010</text>
+<text x="70" y="140">0001</text><text x="210" y="125" font-weight="bold">0000</text><text x="350" y="140">0010</text>
+<text x="70" y="230">0101</text><text x="210" y="230">0100</text><text x="350" y="230">0110</text>
+<g font-size="11" fill="#1f4e8c"><text x="210" y="68">TOP</text><text x="210" y="208">BOTTOM</text><text x="70" y="158">LEFT</text><text x="350" y="158">RIGHT</text><text x="210" y="145">WINDOW</text></g></g></svg>
+<p><small>Bit order: Top, Bottom, Right, Left (screen coordinates, y increases downward).</small></p>
+
+<h3>Liang-Barsky Line Clipping</h3>
+<p>Writes the line as P(t) = P1 + t(P2 &minus; P1), 0 &le; t &le; 1, and uses four inequalities (one per window edge) to find the range of t that stays inside. It needs fewer intersection calculations than Cohen-Sutherland and is usually faster.</p>
+<h3>Sutherland-Hodgman Polygon Clipping</h3>
+<p>Clips a polygon against one window edge at a time (left, right, top, bottom). For each polygon edge it outputs the end point, the intersection point or both, depending on whether the points are inside or outside. The output of one edge becomes the input of the next. It is used for the buildings, lake and park in the GIS demo and for shapes in the video editor.</p>
+
+<h2 id="advantages">Advantages of Clipping</h2>
+<ul><li>Reduces unnecessary rendering</li><li>Improves performance</li><li>Displays only required objects</li><li>Saves processing time</li><li>Useful in zooming, panning and animation</li></ul>
+
+<h2 id="performance">Performance Considerations</h2>
+<table class="data"><tr><th>Situation</th><th>Why clipping matters</th></tr>
+<tr><td>Large maps</td><td>Thousands of roads and buildings exist, but only those in the viewport need drawing.</td></tr>
+<tr><td>High-resolution images</td><td>Only the visible pixels of a huge image are copied to the screen.</td></tr>
+<tr><td>Multiple graphical objects</td><td>Objects completely outside are rejected early with cheap tests.</td></tr>
+<tr><td>Video frames</td><td>Layers extending beyond the frame are cut so nothing outside is rendered or exported.</td></tr>
+<tr><td>Frequent movement / animation</td><td>Clipping is repeated every frame, so a fast algorithm keeps animation smooth.</td></tr></table>
+
+<h2 id="lab">Line Clipping Lab (Cohen-Sutherland)</h2>
+<p>Enter a line and a clipping window, then press <strong>Perform Clipping</strong>. Python (Flask) does the calculation. Canvas coordinates: origin at top-left, y increases downward, range 0&ndash;500 &times; 0&ndash;380.</p>
+<div class="layout">
+<div><canvas id="labCanvas" width="500" height="380"></canvas>
+<div class="legend"><span><i class="sw" style="background:#c0392b"></i>Original line</span><span><i class="sw" style="background:#1f4e8c"></i>Clipping window</span><span><i class="sw" style="background:#2e7d32"></i>Visible portion</span></div></div>
+<div>
+<fieldset><legend>Line</legend><div class="fields">
+<label>x1<input id="x1" type="number" value="40"></label><label>y1<input id="y1" type="number" value="60"></label>
+<label>x2<input id="x2" type="number" value="440"></label><label>y2<input id="y2" type="number" value="320"></label></div></fieldset>
+<fieldset><legend>Clipping window</legend><div class="fields">
+<label>xmin<input id="xmin" type="number" value="130"></label><label>ymin<input id="ymin" type="number" value="90"></label>
+<label>xmax<input id="xmax" type="number" value="340"></label><label>ymax<input id="ymax" type="number" value="270"></label></div></fieldset>
+<button id="labGo">Perform Clipping</button>
+<div class="panel result"><h3>Result</h3><div id="labResult"></div></div>
+</div></div>
+
+<h2 id="polygon-lab">Polygon Clipping Lab (Sutherland-Hodgman)</h2>
+<p>Enter the polygon vertices (one <code>x, y</code> pair per line, in order) and a clipping window. The polygon is clipped against the left, right, top and bottom edges in turn; use <strong>Show stage</strong> to view the result after each edge.</p>
+<div class="layout">
+<div><canvas id="polyCanvas" width="500" height="380"></canvas>
+<div class="legend"><span><i class="sw" style="background:#c0392b"></i>Original polygon</span><span><i class="sw" style="background:#1f4e8c"></i>Clipping window</span><span><i class="sw" style="background:#2e7d32"></i>Clipped polygon</span></div></div>
+<div>
+<fieldset><legend>Polygon vertices</legend>
+<textarea id="polyPts" rows="6" spellcheck="false">60, 300
+200, 40
+420, 120
+380, 330
+180, 350</textarea></fieldset>
+<fieldset><legend>Clipping window</legend><div class="fields">
+<label>xmin<input id="pxmin" type="number" value="130"></label><label>ymin<input id="pymin" type="number" value="90"></label>
+<label>xmax<input id="pxmax" type="number" value="340"></label><label>ymax<input id="pymax" type="number" value="270"></label></div></fieldset>
+<div class="controls"><button id="polyGo">Perform Clipping</button>
+<label class="inline">Show stage
+<select id="polyStage"><option value="final">Final result</option><option value="0">After left edge</option><option value="1">After right edge</option><option value="2">After top edge</option><option value="3">After bottom edge</option></select></label></div>
+<div class="panel result"><h3>Result</h3><div id="polyResult"></div></div>
+</div></div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/clipping.js') }}"></script>{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block title %}Home{% endblock %}
+{% block content %}
+<h2>Introduction</h2>
+<p><strong>Clipping</strong> is the process of removing the parts of a graphical object that lie outside a chosen viewing region (the <em>clipping window</em>) and keeping only the visible part.</p>
+<p><strong>Why it is used:</strong> a screen can show only a limited area. Drawing everything outside it wastes processing time, so the system first decides what is visible and renders only that.</p>
+<p><strong>How it works:</strong> each line or polygon is compared with the window boundaries. Objects fully inside are kept, objects fully outside are discarded, and objects crossing the boundary are cut at the edge so only the inside portion remains.</p>
+<p><strong>Real applications:</strong> map software (GIS), video and photo editors, image viewers, games, CAD tools, window systems and 3D rendering pipelines.</p>
+<h2>Applications</h2>
+<div class="app-row"><div><h3>GIS Map Visualization</h3><p>Demonstrates clipping of map objects according to a viewing window.</p></div><a class="btn" href="{{ url_for('gis') }}">Open GIS Map</a></div>
+<div class="app-row"><div><h3>Video Editing System</h3><p>Demonstrates how graphical objects can be restricted to a video frame.</p></div><a class="btn" href="{{ url_for('video_editor') }}">Open Video Editor</a></div>
+<div class="app-row"><div><h3>Window-Based Image Viewer</h3><p>Demonstrates how only the visible portion of a large image is displayed.</p></div><a class="btn" href="{{ url_for('image_viewer') }}">Open Image Viewer</a></div>
+<div class="note">Want to see the algorithm step by step? Try the <a href="{{ url_for('about') }}#lab">Line Clipping Lab</a> or the <a href="{{ url_for('about') }}#polygon-lab">Polygon Clipping Lab</a> (calculated by Python/Flask).</div>
+{% endblock %}

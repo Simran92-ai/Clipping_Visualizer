@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% block title %}Video Editor{% endblock %}
+{% block content %}
+<h2>Video Editing System</h2>
+<p>The dark area is the <strong>pasteboard</strong>; the bright rectangle is the <strong>video frame</strong> (clipping window). Drag objects with the mouse &ndash; the part outside the frame is clipped away (shown faintly so you can see what was removed).</p>
+<div class="layout">
+<div>
+<canvas id="vid" width="900" height="460"></canvas>
+<div class="timeline"><div class="ruler"><span>00:00</span><span>00:05</span><span>00:10</span><span>00:15</span><span>00:20</span></div>
+<div class="track" style="background:#3a3f48"><b style="left:2%;width:40%;background:#4a90d9"></b><b style="left:45%;width:30%;background:#4a90d9"></b></div>
+<div class="track" style="background:#3a3f48"><b style="left:10%;width:55%;background:#d98c4a"></b></div>
+<div class="track" style="background:#3a3f48"><b style="left:0;width:80%;background:#5fa86b"></b></div></div>
+<div class="controls">
+<button id="addRect">Add Rectangle</button><button id="addCircle">Add Circle</button><button id="addText">Add Text</button><button id="addImg">Add Image Shape</button>
+<button id="clear" class="alt">Clear</button><button id="reset" class="alt">Reset</button><button id="move" class="on">Move Object: ON</button>
+</div>
+</div>
+<div class="panel"><h3>Information</h3>
+<table><tr><td>Clipping Algorithm</td><td>Cohen-Sutherland / Rectangular Clipping</td></tr><tr><td>Video Frame</td><td id="iFrame"></td></tr><tr><td>Objects</td><td id="iCount"></td></tr><tr><td>Selected Object</td><td id="iSel">none</td></tr><tr><td>Status</td><td id="iStat">-</td></tr></table>
+<h3 style="margin-top:14px">Clipping in video editing</h3>
+<p style="margin:0"><small>Titles, logos and clips often move or zoom partly beyond the frame (slide-in titles, pan &amp; zoom). The editor clips each layer against the frame so that only pixels inside the output area are rendered, which saves processing time. Rectangles, circles and picture shapes are clipped as polygons (Sutherland-Hodgman); text is clipped to the frame rectangle. Click an object to see its status.</small></p></div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/clipping.js') }}"></script><script src="{{ url_for('static', filename='js/video_editor.js') }}"></script>{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block title %}GIS Map{% endblock %}
+{% block content %}
+<h2>GIS Map Visualization</h2>
+<p>A fictional map (roads, river, buildings, lake, park, boundaries, landmarks). Only what falls inside the <strong>clipping window</strong> is drawn. Coordinates are sent to Flask, which clips lines with <em>Cohen-Sutherland</em> and polygons with <em>Sutherland-Hodgman</em>.</p>
+<div class="layout">
+<div>
+<canvas id="map" width="960" height="560"></canvas>
+<div class="controls">
+<button id="zin">Zoom +</button><button id="zout">Zoom &minus;</button><button id="reset" class="alt">Reset View</button>
+<button id="proc">Show Clipping Process</button>
+<label><input type="checkbox" id="ghost" checked> Show hidden (before clipping) objects</label>
+</div>
+<div class="legend"><span><i class="sw" style="background:#fff;border:2px solid #1f4e8c"></i>Clipping window</span><span><i class="sw" style="background:#ddd"></i>Outside (clipped away)</span><span><i class="sw" style="background:#2e7d32"></i>Visible part (process mode)</span><span><i class="sw" style="background:#c0392b"></i>Outside part (process mode)</span></div>
+<p><small><strong>Drag inside the window</strong> to move it &bull; <strong>drag its bottom-right corner</strong> to resize &bull; <strong>drag outside</strong> to pan the map &bull; <strong>mouse wheel</strong> to zoom.</small></p>
+</div>
+<div class="panel"><h3>Information</h3>
+<table><tr><td>Clipping Window</td><td id="iWin"></td></tr><tr><td>Objects Before Clipping</td><td id="iBef"></td></tr><tr><td>Objects After Clipping</td><td id="iAft"></td></tr><tr><td>Selected Algorithm</td><td>Cohen-Sutherland (lines)<br>Sutherland-Hodgman (polygons)</td></tr><tr><td>Zoom</td><td id="iZoom"></td></tr></table>
+<p style="margin-bottom:0"><small>Objects = polylines + polygons + landmarks. &ldquo;After&rdquo; counts objects with at least a visible portion.</small></p></div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/gis.js') }}"></script>{% endblock %}

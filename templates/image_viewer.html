@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block title %}Image Viewer{% endblock %}
+{% block content %}
+<h2>Window-Based Image Viewer</h2>
+<p>Upload any image (or use the built-in sample). The <strong>blue rectangle</strong> is the fixed viewing window. Zoom and pan the image &ndash; only the part inside the window is displayed; the rest is clipped (shown faintly outside the window).</p>
+<div class="layout">
+<div>
+<canvas id="viewer" width="820" height="520"></canvas>
+<div class="controls">
+<input type="file" id="file" accept="image/*">
+<button id="zin">Zoom +</button><button id="zout">Zoom -</button><button id="reset" class="alt">Reset</button><button id="center" class="alt">Center Image</button>
+<label><input type="checkbox" id="ghost" checked> Show clipped portion faintly</label>
+</div>
+<p><small>Drag with the mouse to pan &bull; mouse wheel to zoom.</small></p>
+</div>
+<div class="panel"><h3>Information</h3>
+<table><tr><td>Image Size</td><td id="iImg"></td></tr><tr><td>Viewing Window Size</td><td id="iView"></td></tr><tr><td>Zoom Level</td><td id="iZoom"></td></tr><tr><td>Current Position</td><td id="iPos"></td></tr><tr><td>Visible Portion</td><td id="iVis"></td></tr></table>
+<h3 style="margin-top:14px">What is happening?</h3>
+<p style="margin:0"><small>The image rectangle is clipped against the viewing window. Only the intersection is passed to the drawing routine, so portions outside the window are never rendered or displayed. This is why large, high-resolution images can be browsed smoothly.</small></p></div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/clipping.js') }}"></script><script src="{{ url_for('static', filename='js/image_viewer.js') }}"></script>{% endblock %}

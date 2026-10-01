@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{% endblock %} | Clipping-Based Graphics Application</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head>
+<body>
+<header><h1>Clipping-Based Graphics Application</h1><p>Interactive Demonstration of Clipping Concepts in Computer Graphics</p></header>
+{% set ep = request.endpoint %}
+<nav>
+<a href="{{ url_for('index') }}" class="{{ 'active' if ep=='index' }}">Home</a>
+<a href="{{ url_for('gis') }}" class="{{ 'active' if ep=='gis' }}">GIS Map</a>
+<a href="{{ url_for('video_editor') }}" class="{{ 'active' if ep=='video_editor' }}">Video Editor</a>
+<a href="{{ url_for('image_viewer') }}" class="{{ 'active' if ep=='image_viewer' }}">Image Viewer</a>
+<a href="{{ url_for('about') }}" class="{{ 'active' if ep=='about' }}">About Clipping</a>
+</nav>
+<main>{% block content %}{% endblock %}</main>
+<footer>
+<div class="foot">
+<div><strong>Clipping-Based Graphics Application</strong><br>Computer Graphics &ndash; Assignment 10<br>
+<!--Python &middot; Flask &middot; HTML5 Canvas &middot; CSS3 -->
+</div>
+<div><strong>Pages</strong><br><a href="{{ url_for('index') }}">Home</a> <a href="{{ url_for('gis') }}">GIS Map</a> <a href="{{ url_for('video_editor') }}">Video Editor</a> <a href="{{ url_for('image_viewer') }}">Image Viewer</a> <a href="{{ url_for('about') }}">About Clipping</a></div>
+<div><strong>Algorithm Labs</strong><br><a href="{{ url_for('about') }}#lab">Line Clipping</a> <a href="{{ url_for('about') }}#polygon-lab">Polygon Clipping</a></div>
+</div>
+<div class="credit">Prepared by Simran Waghmare | 25101B2009</div>
+</footer>
+{% block scripts %}{% endblock %}
+</body></html>
